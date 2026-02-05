@@ -1,0 +1,8 @@
+function verify2FA(userSecret, token) {
+  return speakeasy.totp.verify({
+    secret: userSecret,
+    encoding: "base32",
+    token,
+    window: 1
+  });
+}
