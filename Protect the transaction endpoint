@@ -1,0 +1,16 @@
+app.post("/send-transaction", async (req, res) => {
+  const { amount, to, twoFACode } = req.body;
+
+  const user = await getUserFromDB(req.user.id);
+
+  const isValid = verify2FA(user.twoFASecret, twoFACode);
+
+  if (!isValid) {
+    return res.status(401).json({ error: "Invalid 2FA code" });
+  }
+
+  // ✅ 2FA passed — now execute transaction
+  const txHash = await sendTransaction(to, amount);
+
+  res.json({ success: true, txHash });
+});
